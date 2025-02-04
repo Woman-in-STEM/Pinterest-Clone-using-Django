@@ -1,0 +1,238 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boards</title>
+    <style>
+         body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url("{% static 'boardBackground.png' %}");
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .modal {
+            background: linear-gradient(rgb(61, 3, 3), white,rgb(61, 3, 3));
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 400px;
+            padding: 20px;
+            text-align: center;
+            color: black;
+        }
+
+        .modal h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .modal-footer {
+            text-align: center;
+        }
+
+        .modal-footer button {
+            background: #e60023;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal-footer button:hover {
+            background: #cc001f;
+        }
+
+        .success-popup {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: darkred;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px 20px;
+            height: 60px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar .logo img {
+            height: 40px;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .navbar .nav-links a {
+            text-decoration: none;
+            color: whitesmoke;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 5px 10px;
+        }
+
+        .navbar .nav-links a:hover {
+            background-color: black;
+            border-radius: 4px;
+        }
+
+        .navbar .search-bar {
+            flex-grow: 1;
+            margin: 0 20px;
+        }
+
+        .navbar .search-bar input {
+            width: 100%;
+            padding: 8px 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            outline: none;
+            background-color: bisque;
+        }
+
+        .navbar .profile {
+            margin-left: 20px; /* Space between search bar and profile image */
+        }
+
+        .navbar .profile img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <!-- Logo -->
+        <div class="logo">
+            <img src="{% static 'logo.jpg' %}" alt="Logo">
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'create_pin' %}">Create Pin</a>
+            <a href="{% url 'create_board' %}" style="background-color: black;border-radius: 4px;">Create Board</a>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" placeholder="Search...">
+        </div>
+
+        <!-- Profile -->
+        <div class="profile">
+            <a href="{% url 'profile' %}">
+                <img src="{% static 'profile.jpg' %}" alt="Profile">
+            </a>
+        </div>
+    </nav>
+    
+    <!-- Modal -->
+    <div class="modal">
+        <h1>Create Board</h1>
+        <form id="create-board-form">
+            <div class="form-group">
+                <label for="board-name" >Name</label>
+                <input type="text" id="board-name" name="name" placeholder='Like "Places to Go" or "Recipes to Make"' required>
+            </div>
+            <div class="modal-footer">
+                <button type="submit">Create</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Success Popup -->
+    <div class="success-popup" id="success-popup">
+        Board successfully created!
+    </div>
+
+    <script>
+        document.getElementById("create-board-form").addEventListener("submit", function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Get board name
+            const boardName = document.getElementById("board-name").value;
+
+            // Submit the form data using Fetch API
+            fetch("{% url 'create_board' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}", // CSRF token for security
+                },
+                body: JSON.stringify({
+                    name: boardName,
+                }),
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        // Show success popup
+                        const successPopup = document.getElementById("success-popup");
+                        successPopup.style.display = "block";
+
+                        // Hide popup after 2 seconds
+                        setTimeout(() => {
+                            successPopup.style.display = "none";
+                        }, 2000);
+
+                        // Clear the form input
+                        document.getElementById("board-name").value = "";
+                    } else {
+                        response.json().then((data) => alert(data.error || "Failed to create board."));
+                    }
+                })
+                .catch((error) => console.error("Error:", error));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pins</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-image: url("{% static 'pinBackground.png' %}");
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: darkred;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px 20px;
+            height: 60px;
+        }
+
+        .navbar .logo img {
+            height: 40px;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .navbar .nav-links a {
+            text-decoration: none;
+            color: whitesmoke;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 5px 10px;
+        }
+
+        .navbar .nav-links a:hover {
+            background-color: black;
+            border-radius: 4px;
+        }
+
+        .navbar .search-bar {
+            flex-grow: 1;
+            margin: 0 20px;
+        }
+
+        .navbar .search-bar input {
+            width: 100%;
+            padding: 8px 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            outline: none;
+            background-color: bisque;
+        }
+
+        .navbar .profile {
+            margin-left: 20px; /* Space between search bar and profile image */
+        }
+
+        .navbar .profile img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input, textarea, select, button {
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #d73a3a;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #b53030;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .popup.show {
+            display: block;
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <!-- Logo -->
+        <div class="logo">
+            <img src="{% static 'logo.jpg' %}" alt="Logo">
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'create_pin' %}" style="background-color: black;border-radius: 4px;">Create Pin</a>
+            <a href="{% url 'create_board' %}">Create Board</a>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" placeholder="Search...">
+        </div>
+
+        <!-- Profile -->
+        <div class="profile">
+            <a href="{% url 'profile' %}">
+                <img src="{% static 'profile.jpg' %}" alt="Profile">
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Create Pin</h1>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="text" name="title" placeholder="Title" required>
+            <input type="file" name="image" accept="image/*" required>
+            <textarea name="description" placeholder="Description" rows="4" required></textarea>
+            <select name="board" required>
+                <option value="" disabled selected>Select board</option>
+                {% for board in boards %}
+                    <option value="{{ board.id }}">{{ board.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Create</button>
+        </form>
+    </div>
+
+    <div class="popup" id="successPopup">
+        <p>Pin successfully created!</p>
+        <button onclick="closePopup()">Close</button>
+    </div>
+
+    <script>
+        function closePopup() {
+            document.getElementById('successPopup').classList.remove('show');
+        }
+    </script>
+        {% if messages %}
+        <div class="popup" id="successPopup">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+            <button onclick="closePopup()">Close</button>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('successPopup').classList.add('show');
+            });
+        </script>
+    {% endif %}
+    
+
+</body>
+</html>

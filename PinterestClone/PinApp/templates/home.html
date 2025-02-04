@@ -1,0 +1,162 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: darkred;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px 20px;
+            height: 60px;
+        }
+
+        .navbar .logo img {
+            height: 40px;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .navbar .nav-links a {
+            text-decoration: none;
+            color: whitesmoke;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 5px 10px;
+        }
+
+        .navbar .nav-links a:hover {
+            background-color: black;
+            border-radius: 4px;
+        }
+
+        .navbar .search-bar {
+            flex-grow: 1;
+            margin: 0 20px;
+        }
+
+        .navbar .search-bar input {
+            width: 100%;
+            padding: 8px 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            outline: none;
+            background-color: bisque;
+        }
+
+        .navbar .profile {
+            margin-left: 20px; /* Space between search bar and profile image */
+        }
+
+        .navbar .profile img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Grid Container */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .grid-container .pin {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+
+        .grid-container .pin img {
+            width: 100%;
+            height: auto;
+        }
+
+        .grid-container .pin h3 {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        /* Scrollable image container */
+        .image-container {
+            margin-top: 10px;
+            overflow-x: auto; /* Allows horizontal scrolling */
+            white-space: nowrap;
+        }
+
+        .image-container img {
+            display: block;
+            width: 100%; /* Image width can be adjusted based on requirement */
+            max-width: none; /* Ensures no automatic resizing */
+        }
+        
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <!-- Logo -->
+        <div class="logo">
+            <img src="{% static 'logo.jpg' %}" alt="Logo">
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="nav-links">
+            <a href="{% url 'home' %}" style="background-color: black;border-radius: 4px;">Home</a>
+            <a href="{% url 'create_pin' %}">Create Pin</a>
+            <a href="{% url 'create_board' %}">Create Board</a>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" placeholder="Search...">
+        </div>
+
+        <!-- Profile -->
+        <div class="profile">
+            <a href="{% url 'profile' %}">
+                <img src="{% static 'profile.jpg' %}" alt="Profile">
+            </a>
+        </div>
+    </nav>
+    <center><h4>YOUR PINS</h4></center>
+    <!-- Grid of Pins -->
+    {% if pins %}
+    <div class="grid-container">
+        {% for pin in pins %}
+        <div class="pin">
+            <img src="{{ pin.image.url }}" alt="{{ pin.title }}">
+            <h3>{{ pin.title }}</h3>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <center><h4>IDEAS FOR PINS</h4></center>
+    <!-- Scrollable Image -->    
+    <div class="image-container">
+        <img src="{% static 'scrollImage.png' %}" alt="Large Image">
+    </div>
+    
+</body>
+</html>

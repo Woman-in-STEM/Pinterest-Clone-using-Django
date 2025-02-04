@@ -1,0 +1,129 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url("{% static 'background.png' %}"); /* Replace with your image URL or path */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-container input {
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-container button {
+            padding: 10px;
+            background-color: #e60023;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .form-container button:hover {
+            background-color: #d4001f;
+        }
+        .form-container .toggle-link {
+            margin-top: 15px;
+            text-align: center;
+        }
+        .form-container .toggle-link a {
+            color: #e60023;
+            text-decoration: none;
+        }
+        .form-container .toggle-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <!-- Registration Form -->
+            <div id="register-form" style="display: block;">
+                <center><h1 style="color:#d4001f">PINTEREST CLONE</h1></center>
+                <h2>Register</h2>
+                <form method="POST" action="{% url 'register' %}">
+                    {% csrf_token %}
+                    Username<input type="text" name="email" placeholder="Enter username" required>
+                    Password<input type="password" name="password" placeholder="Password" required>
+                    Date Of Birth<input type="date" name="birthdate" placeholder="Birthdate" required>
+                    <button type="submit">Register</button>
+                </form>
+                <div class="toggle-link">
+                    <p>Already have an account? <a href="#" onclick="toggleForms()">Login here</a></p>
+                </div>
+            </div>
+            <!-- Login Form -->
+            <div id="login-form" style="display: none;">
+                <h2>Login</h2>
+                <form method="POST" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <input type="text" name="email" placeholder="Username" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <button type="submit">Login</button>
+                </form>
+                <div class="toggle-link">
+                    <p>Don't have an account? <a href="#" onclick="toggleForms()">Register here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleForms() {
+            const registerForm = document.getElementById('register-form');
+            const loginForm = document.getElementById('login-form');
+            if (registerForm.style.display === 'none') {
+                registerForm.style.display = 'block';
+                loginForm.style.display = 'none';
+            } else {
+                registerForm.style.display = 'none';
+                loginForm.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
