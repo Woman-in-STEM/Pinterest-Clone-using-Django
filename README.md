@@ -73,7 +73,7 @@ Make sure you have the following installed:
 - Use a cloud storage provider (AWS S3) for media files
 
 ## 📄 License
-This project is open-source and available under the **MIT License**.
+This project is open-source and available under the **GNU General Public License**.
 
 ## 💡 Contribution
 Contributions are welcome! Feel free to open issues and submit pull requests.
